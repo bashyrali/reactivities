@@ -1,43 +1,50 @@
-﻿using System.Net;
-using System.Text.Json;
-using Domain;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿    using System;
+    using System.Text.Json;
+    using Application.Core;
+    using Domain;
+    using FluentValidation;
+    using Microsoft.AspNetCore.Mvc;
 
-namespace API.Middleware
-{
-    public class ExceptionMiddleware
+    namespace API.Middleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
-        private readonly IHostEnvironment _env;
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger,
-            IHostEnvironment env)
+        public class ExceptionMiddleware : IMiddleware
         {
-            _env = env;
-            _logger = logger;
-            _next = next;
-        }
+            private readonly ILogger<ExceptionMiddleware> logger;
+            private readonly IHostEnvironment env;
 
-        public async Task InvokeAsync(HttpContext context)
-        {
-            try
+            public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
             {
-                await _next(context);
+                this.logger = logger;
+                this.env = env;
             }
-            catch (ValidationException ex)
+
+
+
+            public async Task InvokeAsync(HttpContext context, RequestDelegate next)
             {
-                await HandleValidationException(context, ex);
+                try
+                {
+                    await next(context);
+                }
+                catch (ValidationException ex)
+                {
+                    await HandleValidationException(context, ex);
+                }
+                catch (Exception ex)
+                {
+                    await HandleException(context, ex);
+                }
             }
-            catch (Exception ex)
+
+            private async Task HandleException(HttpContext context, Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                logger.LogError(ex, ex.Message);
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                var response = _env.IsDevelopment()
-                    ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
-                    : new AppException(context.Response.StatusCode, "Internal Server Error");
+                var response = env.IsDevelopment()
+                    ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace)
+                    : new AppException(context.Response.StatusCode, ex.Message, null);
 
                 var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
@@ -45,38 +52,37 @@ namespace API.Middleware
 
                 await context.Response.WriteAsync(json);
             }
-        }
 
-        private static async Task HandleValidationException(HttpContext context, ValidationException ex)
-        {
-            var validationErrors = new Dictionary<string, string[]>();
-
-            if (ex.Errors is not null)
+            private async Task HandleValidationException(HttpContext context, ValidationException ex)
             {
-                foreach (var error in ex.Errors)
+                var validationErrors = new Dictionary<string, string[]>();
+
+                if (ex.Errors is not null)
                 {
-                    if (validationErrors.TryGetValue(error.PropertyName, out var existingErrors))
+                    foreach (var error in ex.Errors)
                     {
-                        validationErrors[error.PropertyName] = existingErrors.Append(error.ErrorMessage).ToArray();
-                    }
-                    else
-                    {
-                        validationErrors[error.PropertyName] =new [] {error.ErrorMessage };
+                        if (validationErrors.TryGetValue(error.PropertyName, out var existingErrors))
+                        {
+                            validationErrors[error.PropertyName] = existingErrors.Append(error.ErrorMessage).ToArray();
+                        }
+                        else
+                        {
+                            validationErrors[error.PropertyName] =new [] {error.ErrorMessage };
+                        }
                     }
                 }
+
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                var validationProblemDetails = new ValidationProblemDetails(validationErrors)
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Type = "ValidationFailure",
+                    Title = "Validation error",
+                    Detail = "One or more validation errors has occurred"
+                };
+
+                await context.Response.WriteAsJsonAsync(validationProblemDetails);
             }
-
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-
-            var validationProblemDetails = new ValidationProblemDetails(validationErrors)
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Type = "ValidationFailure",
-                Title = "Validation error",
-                Detail = "One or more validation errors has occurred"
-            };
-
-            await context.Response.WriteAsJsonAsync(validationProblemDetails);
         }
     }
-}

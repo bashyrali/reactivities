@@ -3,6 +3,7 @@ using Application.Activities;
 using Application.Core;
 using Application.Validator;
 using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -27,8 +28,11 @@ public static class ServiceExtensions
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
         services.AddAutoMapper(typeof(MapProfile).Assembly);
+
         services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
-        //services.AddTransient<ExceptionMiddleware>();
+        services.AddTransient<ExceptionMiddleware>();
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
         return services;
     }
 }
