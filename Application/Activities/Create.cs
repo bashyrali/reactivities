@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Application.DTOs;
+using AutoMapper;
+using Domain;
 using MediatR;
 using Persistence;
 
@@ -6,24 +8,27 @@ namespace Application.Activities;
 
 public class Create
 {
-    public class Command: IRequest<Unit>
+    public class Command: IRequest<string>
     {
-        public Activity Activity { get; set; }
+        public CreateActivityDto ActivityDto { get; set; }
     }
-    public class Handler: IRequestHandler<Command,Unit>
+    public class Handler: IRequestHandler<Command,string>
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public Handler(DataContext context)
+        public Handler(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<string> Handle(Command request, CancellationToken cancellationToken)
         {
-            _context.Add(request.Activity);
+            var activity = _mapper.Map<Activity>(request.ActivityDto);
+            _context.Activities.Add(activity);
             await _context.SaveChangesAsync();
-            return Unit.Value;
+            return activity.Id.ToString();
         }
     }
 }

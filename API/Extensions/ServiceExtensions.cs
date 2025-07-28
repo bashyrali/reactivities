@@ -1,5 +1,8 @@
-﻿using Application.Activities;
+﻿using API.Middleware;
+using Application.Activities;
 using Application.Core;
+using Application.Validator;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -18,8 +21,14 @@ public static class ServiceExtensions
         });
         services.AddCors(opt => opt.AddPolicy("Cors",
             policy => { policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000"); }));
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly);
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
         services.AddAutoMapper(typeof(MapProfile).Assembly);
+        services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
+        //services.AddTransient<ExceptionMiddleware>();
         return services;
     }
 }

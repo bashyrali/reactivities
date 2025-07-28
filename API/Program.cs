@@ -1,5 +1,6 @@
 using System.Reflection;
 using API.Extensions;
+using API.Middleware;
 using Application.Activities;
 using Application.Core;
 using Domain;
@@ -39,6 +40,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();

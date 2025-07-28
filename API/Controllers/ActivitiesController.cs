@@ -1,4 +1,5 @@
 ﻿using Application.Activities;
+using Application.DTOs;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,9 +29,9 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateActivity([FromBody] Activity activity)
+    public async Task<IActionResult> CreateActivity([FromBody] CreateActivityDto activityDto)
     {
-        return Ok(await _mediator.Send(new Create.Command() { Activity = activity }));
+        return Ok(await _mediator.Send(new Create.Command() { ActivityDto = activityDto }));
     }
 
     [HttpPut("{id}")]
