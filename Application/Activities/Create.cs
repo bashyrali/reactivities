@@ -8,11 +8,11 @@ namespace Application.Activities;
 
 public class Create
 {
-    public class Command: IRequest<string>
+    public class Command: IRequest<Result<string>>
     {
         public CreateActivityDto ActivityDto { get; set; }
     }
-    public class Handler: IRequestHandler<Command,string>
+    public class Handler: IRequestHandler<Command, Result<string>>
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
@@ -23,12 +23,16 @@ public class Create
             _mapper = mapper;
         }
 
-        public async Task<string> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
         {
             var activity = _mapper.Map<Activity>(request.ActivityDto);
             _context.Activities.Add(activity);
-            await _context.SaveChangesAsync();
-            return activity.Id.ToString();
+
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+
+            if (!result) return Result<string>.Failure("Failed to create the activity", 400);
+
+            return Result<string>.Success(activity.Id.ToString());
         }
     }
 }

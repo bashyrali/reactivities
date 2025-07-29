@@ -31,7 +31,7 @@ public static class ServiceExtensions
 
         services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
         services.AddTransient<ExceptionMiddleware>();
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }
