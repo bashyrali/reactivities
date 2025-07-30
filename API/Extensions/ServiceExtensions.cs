@@ -21,7 +21,7 @@ public static class ServiceExtensions
             opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
         });
         services.AddCors(opt => opt.AddPolicy("Cors",
-            policy => { policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:3000"); }));
+            policy => { policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000"); }));
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly);
