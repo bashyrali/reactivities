@@ -80,8 +80,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "activity",
-        "Type": "Domain.Activity",
+        "Name": "activityDto",
+        "Type": "Application.DTOs.CreateActivityDto",
         "IsRequired": true
       }
     ],
@@ -101,17 +101,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "Domain.Activity",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "API.Controllers.ActivitiesController",

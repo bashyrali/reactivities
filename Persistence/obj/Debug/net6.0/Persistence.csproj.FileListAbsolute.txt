@@ -8,8 +8,9 @@ C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persiste
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.AssemblyInfoInputs.cache
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.AssemblyInfo.cs
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.sourcelink.json
+C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persiste.61C28332.Up2Date
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.dll
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\refint\Persistence.dll
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persistence.pdb
 C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\ref\Persistence.dll
-C:\Users\Lenovo\RiderProjects\Reactivities\Persistence\obj\Debug\net6.0\Persiste.61C28332.Up2Date

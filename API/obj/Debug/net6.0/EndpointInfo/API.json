@@ -146,17 +146,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Activity"
+                "$ref": "#/components/schemas/CreateActivityDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Activity"
+                "$ref": "#/components/schemas/CreateActivityDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Activity"
+                "$ref": "#/components/schemas/CreateActivityDto"
               }
             }
           }
@@ -186,24 +186,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Activity"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Activity"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Activity"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       },
@@ -279,6 +262,36 @@
             "type": "string",
             "format": "uuid"
           },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "venue": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateActivityDto": {
+        "type": "object",
+        "properties": {
           "title": {
             "type": "string",
             "nullable": true
