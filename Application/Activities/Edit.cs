@@ -25,7 +25,7 @@ public class Edit
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FindAsync(request.Activity.Id,cancellationToken);
+            var activity = await _context.Activities.FindAsync(request.Activity.Id);
             if (activity == null) return Result<Unit>.Failure("Activity not found", 404);
             _mapper.Map(request.Activity, activity);
             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
