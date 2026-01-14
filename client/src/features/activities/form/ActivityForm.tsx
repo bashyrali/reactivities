@@ -1,34 +1,40 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
-import type { FormEvent } from "react";
+import { useEffect } from "react";
 import { useActivities } from "../../../lib/hooks/useActivities";
 import { useNavigate, useParams } from "react-router";
+import { useForm } from 'react-hook-form'
 
 export default function ActivityForm() {
-    const {id} = useParams();
+    const { id } = useParams();
+    const { handleSubmit, register, control, reset } = useForm()
     const { updateActivity, createActivity, activity, isLoadingActivity } = useActivities(id);
     const navigate = useNavigate();
+    useEffect(() => {
+        if()
+    } , [activity, reset])
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const onSubmit = async (data) => {
+        console.log("data--" + data)
+        // event.preventDefault();
 
-        const formData = new FormData(event.currentTarget);
+        // const formData = new FormData(event.currentTarget);
 
-        const data: { [key: string]: FormDataEntryValue } = {}
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
+        // const data: { [key: string]: FormDataEntryValue } = {}
+        // formData.forEach((value, key) => {
+        //     data[key] = value;
+        // });
 
-        if (activity) {
-            data.id = activity.id;
-            await updateActivity.mutateAsync(data as unknown as Activity);
-            navigate(`/activities/${activity.id}`);
-        } else {
-            createActivity.mutate(data as unknown as Activity, {
-                onSuccess: (id) => {
-                    navigate(`/activities/${id}`)
-                }
-            });
-        }
+        // if (activity) {
+        //     data.id = activity.id;
+        //     await updateActivity.mutateAsync(data as unknown as Activity);
+        //     navigate(`/activities/${activity.id}`);
+        // } else {
+        //     createActivity.mutate(data as unknown as Activity, {
+        //         onSuccess: (id) => {
+        //             navigate(`/activities/${id}`)
+        //         }
+        //     });
+        // }
     }
 
     if (isLoadingActivity) return <Typography>Loading activity...</Typography>
@@ -38,7 +44,7 @@ export default function ActivityForm() {
             <Typography variant="h5" gutterBottom color="primary">
                 {activity ? 'Edit activity' : 'Create activity'}
             </Typography>
-            <Box component='form' onSubmit={handleSubmit} display='flex' flexDirection='column' gap={3}>
+            <Box component='form' onSubmit={handleSubmit(onSubmit)} display='flex' flexDirection='column' gap={3}>
                 <TextField name='title' label='Title' defaultValue={activity?.title} />
                 <TextField name='description' label='Description' defaultValue={activity?.description} multiline rows={3} />
                 <TextField name='category' label='Category' defaultValue={activity?.category} />
